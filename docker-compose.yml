@@ -1,0 +1,20 @@
+services:
+  vedirect-mqtt:
+    build: .
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
+    command: >
+      --port /dev/ttyUSB0
+      --mqttbroker mosquitto
+      --mqttbrokerport 1883
+      --topicprefix vedirect/
+      --timeout 60 
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto:/mosquitto/config
+
+volumes:
+  mosquitto:

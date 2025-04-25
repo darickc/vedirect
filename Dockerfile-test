@@ -1,0 +1,24 @@
+FROM python:3.12-slim
+
+# Install required system packages
+RUN apt-get update && apt-get install -y \
+    socat \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+RUN pip install --no-cache-dir paho-mqtt pyserial
+
+# Copy the vedirect package and script
+COPY vedirect /app/vedirect
+COPY examples/vedirect_mqtt.py /app/vedirect_mqtt.py
+COPY test/smartsolar_1.39.dump /app/test/smartsolar_1.39.dump
+COPY run-demo.sh /app/run-demo.sh
+# Set working directory
+WORKDIR /app
+
+# Make the scripts executable
+RUN chmod +x /app/vedirect_mqtt.py /app/run-demo.sh
+
+# Command to run the script
+#ENTRYPOINT ["python3", "/app/vedirect_mqtt.py"]
+ENTRYPOINT ["/app/run-demo.sh"]

@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-import argparse, os
+import argparse, os, json
 import paho.mqtt.client as mqtt
 from vedirect import Vedirect
 
@@ -21,8 +21,6 @@ if __name__ == '__main__':
     client.loop_start()
 
     def mqtt_send_callback(packet):
-        for key, value in packet.items():
-            if key != 'SER#': # topic cannot contain MQTT wildcards
-                client.publish(args.topicprefix + key, value)
+        client.publish(args.topicprefix + packet['PID'], json.dumps(packet))
 
     ve.read_data_callback(mqtt_send_callback)
